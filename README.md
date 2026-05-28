@@ -6,7 +6,7 @@
 
 **A blazing-fast, zero-dependency developer toolkit that lives entirely in your browser.**
 
-JWT decoding · JSON editing · Base64 · URL encoding — all in one beautiful static page.
+JWT decoding · JSON editing · JSON serialize/deserialize · Base64 · URL encoding — all in one beautiful static page.
 
 <br/>
 
@@ -41,14 +41,23 @@ Paste any JWT and watch it come alive. The encoded token lights up in three dist
 - One-click copy for header and payload
 
 ### 🌲 JSON Editor
-A split-pane editor modeled after [jsoneditoronline.org](https://jsoneditoronline.org).
+A split-pane editor with two sub-tools: **Editor** and **Serialize / Deserialize**.
 
+#### Editor
 - **Left pane** — raw text editor with auto-parse on type
 - **Right pane** — collapsible tree view with ▾/▸ toggles and item counts on collapsed nodes
 - Type-colored values throughout (`teal keys`, `green strings`, `peach numbers`, `mauve booleans`, `sky nulls`)
 - Format · Minify · Sort Keys — all non-destructive
 - Live validation status chip with node count
 - Explicit sync arrows to push text → tree or tree → text
+
+#### Serialize / Deserialize
+Convert between a JSON object and a JSON-encoded string literal — the operation you need when embedding JSON inside another JSON field, a config file, a REST body, or source code.
+
+- **Serialize** — takes a JSON object and produces an escaped string literal: `{"a":1}` → `"{\"a\":1}"`
+- **Deserialize** — takes a JSON string literal and expands it back to a formatted object: `"{\"a\":1}"` → `{ "a": 1 }`
+- Swap input ↔ output in one click to chain operations
+- Clear error messages when input doesn't match the expected form
 
 ### 🔡 Base64
 Clean encode/decode with two variants and character count on output.
@@ -78,6 +87,8 @@ Full percent-encoding in the two modes you actually need.
 The color system lives entirely in CSS custom properties — swap a palette by editing one block of variables.
 
 The header uses `backdrop-filter: blur` for a frosted-glass effect. Interactive states use `color-mix()` for alpha variants of semantic accent colors — no hardcoded `rgba` values anywhere.
+
+The layout is fully responsive down to iPhone-sized screens: tab labels collapse to icon-only at narrow widths (accessible names preserved via `aria-label`), the JSON editor stacks vertically, inputs use 16 px to prevent iOS auto-zoom, and safe-area insets are respected for notch and home-indicator clearance.
 
 ---
 
@@ -121,9 +132,9 @@ To enable: go to **Settings → Pages → Source → GitHub Actions**.
 
 ```
 taumoeba/
-├── index.html          # all markup — 349 lines
-├── style.css           # design system + components — 1006 lines
-├── app.js              # all logic — 811 lines
+├── index.html          # all markup
+├── style.css           # design system + components
+├── app.js              # all logic
 │
 ├── assets/
 │   └── taumoeba-logo.png
@@ -136,7 +147,7 @@ taumoeba/
 └── .gitignore
 ```
 
-No `node_modules`. No `package.json`. No lock files. The entire app ships in **~76 KB** of hand-written HTML, CSS, and JavaScript.
+No `node_modules`. No `package.json`. No lock files. The entire app ships in hand-written HTML, CSS, and JavaScript — no build step, no bundler, no framework.
 
 ---
 
