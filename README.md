@@ -10,6 +10,10 @@ JWT decoding · JSON editing · JSON serialize/deserialize · Base64 · URL enco
 
 <br/>
 
+[![taumoeba.io](https://img.shields.io/badge/taumoeba.io-launch-89b4fa?style=for-the-badge&labelColor=1e1e2e&logoColor=89b4fa)](https://taumoeba.io)
+
+<br/>
+
 [![Static](https://img.shields.io/badge/static-no%20server%20needed-a6e3a1?style=flat-square&labelColor=1e1e2e)](.)
 [![Zero deps](https://img.shields.io/badge/dependencies-zero-cba6f7?style=flat-square&labelColor=1e1e2e)](.)
 [![No build](https://img.shields.io/badge/build%20step-none-89b4fa?style=flat-square&labelColor=1e1e2e)](.)
