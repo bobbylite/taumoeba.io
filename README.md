@@ -19,6 +19,8 @@ JWT decoding · JSON editing · JSON serialize/deserialize · Base64 · URL enco
 [![No build](https://img.shields.io/badge/build%20step-none-89b4fa?style=flat-square&labelColor=1e1e2e)](.)
 [![Deploy](https://img.shields.io/badge/deploy-GitHub%20Pages-f38ba8?style=flat-square&labelColor=1e1e2e)](.)
 [![Theme](https://img.shields.io/badge/theme-dark%20%2B%20light-f9e2af?style=flat-square&labelColor=1e1e2e)](.)
+[![Privacy](https://img.shields.io/badge/data-privacy%20preserving-94e2d5?style=flat-square&labelColor=1e1e2e)](.)
+
 
 </div>
 
