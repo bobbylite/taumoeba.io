@@ -1018,10 +1018,9 @@ body {
 
 .copy-flash::after {
   content: 'Copied!';
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
   background: var(--c-green);
   color: var(--c-crust);
   font-family: 'Inter', sans-serif;
@@ -1031,6 +1030,7 @@ body {
   border-radius: var(--r-sm);
   white-space: nowrap;
   pointer-events: none;
+  z-index: 9999;
   animation: tooltipFade 1.4s var(--ease) forwards;
 }
 

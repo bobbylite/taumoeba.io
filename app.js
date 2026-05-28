@@ -70,23 +70,39 @@ function escHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+function showCopyFeedback(btn) {
+  btn.classList.remove('copy-flash');
+  void btn.offsetWidth; // reflow to restart animation
+  btn.classList.add('copy-flash');
+  setTimeout(() => btn.classList.remove('copy-flash'), 1500);
+}
+
 function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.classList.remove('copy-flash');
-    void btn.offsetWidth; // reflow to restart animation
-    btn.classList.add('copy-flash');
-    setTimeout(() => btn.classList.remove('copy-flash'), 1500);
-  }).catch(() => {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
+  // Try modern clipboard API first (requires HTTPS)
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => showCopyFeedback(btn))
+      .catch(() => fallbackCopy(text, btn));
+  } else {
+    // Fallback for HTTP or older browsers
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
     document.execCommand('copy');
-    ta.remove();
-  });
+    showCopyFeedback(btn);
+  } catch (e) {
+    console.warn('Copy failed:', e);
+  }
+  ta.remove();
 }
 
 function debounce(fn, ms) {
