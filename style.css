@@ -320,6 +320,7 @@ body {
 
 .panel-inner--fill {
   height: calc(100vh - var(--header-h) - 2.5rem);
+  height: calc(100dvh - var(--header-h) - 2.5rem);
 }
 
 /* ─── Shared section header ───────────────────────────────────── */
@@ -1088,19 +1089,39 @@ body {
 
 /* ─── Responsive tweaks ───────────────────────────────────────── */
 @media (max-width: 900px) {
-  .tab-btn { padding: .4rem .6rem; }
-  .tab-btn span { display: none; }
+  /* Icon-only tabs — accessible name preserved via aria-label */
+  .tab-btn { padding: .45rem .55rem; gap: 0; }
+  .tab-label { display: none; }
   .json-editor-layout {
     grid-template-columns: 1fr 36px 1fr;
   }
 }
 
 @media (max-width: 600px) {
-  .header-inner { padding: 0 1rem; gap: .75rem; }
-  .main-content { padding: .875rem 1rem 1.5rem; }
+  /* Header: keep brand mark, drop wordmark; honor the notch */
+  .header-inner {
+    gap: .4rem;
+    padding-left: max(.75rem, env(safe-area-inset-left));
+    padding-right: max(.75rem, env(safe-area-inset-right));
+  }
+  .logo-name { display: none; }
+  .tab-nav { gap: .15rem; }
+  .tab-btn { padding: .5rem .5rem; }
+  .tab-btn svg { width: 18px; height: 18px; }
+
+  .main-content {
+    padding-top: .875rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* Let the JSON panel grow & scroll instead of locking to viewport
+     height — two tiny stacked panes are unusable on a phone. */
+  .panel-inner--fill { height: auto; }
   .json-editor-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 40px 1fr;
+    grid-template-rows: 300px 40px 300px;
   }
   .editor-gutter {
     flex-direction: row;
@@ -1112,4 +1133,19 @@ body {
     border-right: none;
     border-bottom: 1px solid var(--border-subtle);
   }
+
+  /* Toolbar wraps; status chip drops to its own full-width row */
+  .json-toolbar { gap: .3rem; }
+  .toolbar-center { order: 3; width: 100%; margin: 0; }
+  .json-subnav { flex-wrap: wrap; }
+
+  /* 16px inputs stop iOS Safari auto-zooming on focus */
+  .code-input,
+  .jwt-textarea { font-size: 16px; }
+
+  /* Comfortable tap targets */
+  .btn,
+  .gutter-btn,
+  .pill { min-height: 36px; }
+  .gutter-btn { min-width: 36px; }
 }
