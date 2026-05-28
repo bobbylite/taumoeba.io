@@ -1,9 +1,28 @@
 /* ══════════════════════════════════════════════════════════════
-   DevKit · app.js
-   Theme · Tabs · JWT Decoder · JSON Editor · Base64
+   Taumoeba.io WebKit · app.js
+   Theme · Tabs · JWT Decoder · JSON Editor · Base64 · URL
    ══════════════════════════════════════════════════════════════ */
 
 'use strict';
+
+// ═══════════════════════════════════════════════════════════════
+// BUILD METADATA  (placeholders replaced by CI pipeline)
+// ═══════════════════════════════════════════════════════════════
+
+(function initBuildMeta() {
+  // Version chip — shows commit hash when deployed, 'dev' locally
+  const verEl = document.getElementById('buildVersion');
+  if (verEl) {
+    const v = verEl.textContent.trim();
+    verEl.textContent = v === '__COMMIT_SHA__' ? 'dev' : `v ${v}`;
+  }
+
+  // GitHub link — hidden when placeholder not yet replaced (local dev)
+  const ghLink = document.getElementById('githubLink');
+  if (ghLink && ghLink.getAttribute('href') === '__REPO_URL__') {
+    ghLink.style.display = 'none';
+  }
+})();
 
 // ═══════════════════════════════════════════════════════════════
 // THEME
