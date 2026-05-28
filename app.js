@@ -137,38 +137,58 @@ function formatTimestamp(unix) {
   return `${d.toISOString().replace('T', ' ').replace('.000Z', ' UTC')}  (${rel})`;
 }
 
-function renderSyntaxJSON(obj, depth = 0) {
-  const ind  = '  '.repeat(depth);
-  const ind2 = '  '.repeat(depth + 1);
+function renderClaimTable(obj) {
+  const rows = Object.entries(obj).map(([k, v]) => {
+    const meta   = PINGONE_CLAIMS[k];
+    const isTime = meta?.isTime && typeof v === 'number';
 
-  if (obj === null)             return `<span class="syn-z">null</span>`;
-  if (typeof obj === 'boolean') return `<span class="syn-b">${obj}</span>`;
-  if (typeof obj === 'number')  return `<span class="syn-n">${obj}</span>`;
-  if (typeof obj === 'string')  return `<span class="syn-s">"${escHtml(obj)}"</span>`;
+    // Build value HTML
+    let valueHtml;
+    if (v === null) {
+      valueHtml = `<span class="cv cv-null">null</span>`;
+    } else if (typeof v === 'boolean') {
+      valueHtml = `<span class="cv cv-boolean">${v}</span>`;
+    } else if (typeof v === 'number') {
+      valueHtml = `<span class="cv cv-number">${v}</span>`;
+    } else if (typeof v === 'string') {
+      // Space-delimited strings (scope) or short values → render as tags
+      const parts = v.split(' ');
+      if (parts.length > 1 && parts.every(p => p.length < 40)) {
+        valueHtml = parts.map(p => `<span class="cv-tag">${escHtml(p)}</span>`).join('');
+      } else {
+        valueHtml = `<span class="cv cv-string">${escHtml(v)}</span>`;
+      }
+    } else if (Array.isArray(v)) {
+      if (!v.length) {
+        valueHtml = `<span class="cv cv-null">[ ]</span>`;
+      } else {
+        valueHtml = v.map(item =>
+          `<span class="cv-tag">${escHtml(typeof item === 'object' ? JSON.stringify(item) : String(item))}</span>`
+        ).join('');
+      }
+    } else {
+      // Nested object — compact JSON
+      valueHtml = `<span class="cv cv-string">${escHtml(JSON.stringify(v))}</span>`;
+    }
 
-  if (Array.isArray(obj)) {
-    if (!obj.length) return `<span class="syn-p">[]</span>`;
-    const items = obj.map(v => `${ind2}${renderSyntaxJSON(v, depth + 1)}`).join(',\n');
-    return `<span class="syn-p">[</span>\n${items}\n${ind}<span class="syn-p">]</span>`;
-  }
+    const hintHtml = meta
+      ? `<span class="claim-hint">${escHtml(meta.label)}${meta.p1 ? ' · P1' : ''}</span>`
+      : '';
 
-  if (typeof obj === 'object') {
-    const keys = Object.keys(obj);
-    if (!keys.length) return `<span class="syn-p">{}</span>`;
+    const timeHtml = isTime
+      ? `<div class="time-note">${escHtml(formatTimestamp(v))}</div>`
+      : '';
 
-    const lines = keys.map(k => {
-      const meta  = PINGONE_CLAIMS[k];
-      const hint  = meta ? `<span class="claim-hint">${escHtml(meta.label)}${meta.p1 ? ' · P1' : ''}</span>` : '';
-      const isTime = meta?.isTime && typeof obj[k] === 'number';
-      const timeNote = isTime ? `<span class="time-note">${escHtml(formatTimestamp(obj[k]))}</span>` : '';
-      const val   = renderSyntaxJSON(obj[k], depth + 1);
-      return `${ind2}<span class="syn-k">"${escHtml(k)}"</span><span class="syn-p">: </span>${val}${hint}${timeNote}`;
-    }).join(',\n');
+    return `<div class="claim-row">
+      <span class="ck">${escHtml(k)}</span>
+      <div class="cv-group">
+        <div class="cv-main">${valueHtml}${hintHtml}</div>
+        ${timeHtml}
+      </div>
+    </div>`;
+  });
 
-    return `<span class="syn-p">{</span>\n${lines}\n${ind}<span class="syn-p">}</span>`;
-  }
-
-  return escHtml(String(obj));
+  return `<div class="claim-table">${rows.join('')}</div>`;
 }
 
 function decodeJWT(raw) {
@@ -194,43 +214,58 @@ function getExpiryBadge(payload) {
   return null;
 }
 
-const jwtInput         = document.getElementById('jwtInput');
-const jwtErrorBar      = document.getElementById('jwtErrorBar');
-const jwtVisualWrap    = document.getElementById('jwtVisualWrap');
-const jwtVisual        = document.getElementById('jwtVisual');
-const jwtStatusBar     = document.getElementById('jwtStatusBar');
-const jwtDecoded       = document.getElementById('jwtDecoded');
-const jwtHeaderBody    = document.getElementById('jwtHeaderBody');
-const jwtPayloadBody   = document.getElementById('jwtPayloadBody');
+const jwtInput       = document.getElementById('jwtInput');
+const jwtInputZone   = document.getElementById('jwtInputZone');
+const jwtColorized   = document.getElementById('jwtColorized');
+const jwtErrorInline = document.getElementById('jwtErrorInline');
+const jwtStatusBar   = document.getElementById('jwtStatusBar');
+const jwtDecoded     = document.getElementById('jwtDecoded');
+const jwtHeaderBody  = document.getElementById('jwtHeaderBody');
+const jwtPayloadBody = document.getElementById('jwtPayloadBody');
+
+function showEditMode(errorMsg) {
+  jwtColorized.style.display = 'none';
+  jwtInput.style.display = 'block';
+  if (errorMsg) {
+    jwtErrorInline.textContent = `⚠ ${errorMsg}`;
+    jwtErrorInline.style.display = 'block';
+    jwtInputZone.classList.add('is-error');
+  } else {
+    jwtErrorInline.style.display = 'none';
+    jwtInputZone.classList.remove('is-error');
+  }
+}
 
 function renderJWT() {
   const raw = jwtInput.value.trim();
 
-  // Hide everything
-  jwtErrorBar.style.display = 'none';
-  jwtVisualWrap.style.display = 'none';
   jwtStatusBar.style.display = 'none';
   jwtDecoded.style.display = 'none';
 
-  if (!raw) return;
+  if (!raw) {
+    showEditMode(null);
+    return;
+  }
 
   let decoded;
   try {
     decoded = decodeJWT(raw);
   } catch (e) {
-    jwtErrorBar.textContent = `⚠ ${e.message}`;
-    jwtErrorBar.style.display = 'block';
+    showEditMode(e.message);
     return;
   }
 
-  // Visual strip
-  jwtVisual.innerHTML =
+  // Switch textarea → colorized display
+  jwtInput.style.display = 'none';
+  jwtErrorInline.style.display = 'none';
+  jwtInputZone.classList.remove('is-error');
+  jwtColorized.innerHTML =
     `<span class="jwt-seg-header">${escHtml(decoded.parts[0])}</span>` +
     `<span class="jwt-dot">.</span>` +
     `<span class="jwt-seg-payload">${escHtml(decoded.parts[1])}</span>` +
     `<span class="jwt-dot">.</span>` +
     `<span class="jwt-seg-sig">${escHtml(decoded.sig)}</span>`;
-  jwtVisualWrap.style.display = 'block';
+  jwtColorized.style.display = 'block';
 
   // Status badges
   const badges = [];
@@ -249,14 +284,19 @@ function renderJWT() {
   jwtStatusBar.style.display = 'flex';
 
   // Decoded panels
-  jwtHeaderBody.innerHTML  = renderSyntaxJSON(decoded.header);
-  jwtPayloadBody.innerHTML = renderSyntaxJSON(decoded.payload);
+  jwtHeaderBody.innerHTML  = renderClaimTable(decoded.header);
+  jwtPayloadBody.innerHTML = renderClaimTable(decoded.payload);
   jwtDecoded.style.display = 'grid';
 
-  // Store raw for copy buttons
   jwtHeaderBody.dataset.raw  = JSON.stringify(decoded.header, null, 2);
   jwtPayloadBody.dataset.raw = JSON.stringify(decoded.payload, null, 2);
 }
+
+// Click colorized display → back to editing
+jwtColorized.addEventListener('click', () => {
+  showEditMode(null);
+  jwtInput.focus();
+});
 
 jwtInput.addEventListener('input', renderJWT);
 

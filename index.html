@@ -71,30 +71,27 @@
     <section id="panel-jwt" class="tool-panel active" role="tabpanel" aria-labelledby="tab-jwt">
       <div class="panel-inner">
 
-        <div class="tool-section">
-          <div class="section-header">
+        <div class="jwt-input-zone" id="jwtInputZone">
+          <div class="jwt-zone-toolbar">
             <span class="section-label">Encoded Token</span>
             <div class="header-actions">
               <button class="btn btn-ghost btn-sm" id="jwtExample">Load Example</button>
               <button class="btn btn-ghost btn-sm" id="jwtClear">Clear</button>
             </div>
           </div>
-          <textarea
-            class="code-input jwt-input"
-            id="jwtInput"
-            placeholder="Paste a JWT token here — eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"
-            spellcheck="false"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            rows="4"
-          ></textarea>
-        </div>
-
-        <div id="jwtErrorBar" class="error-bar" style="display:none"></div>
-
-        <div id="jwtVisualWrap" style="display:none">
-          <div class="jwt-visual" id="jwtVisual"></div>
+          <div class="jwt-zone-body">
+            <textarea
+              class="jwt-textarea"
+              id="jwtInput"
+              placeholder="Paste a JWT token here — eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"
+              spellcheck="false"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+            ></textarea>
+            <div class="jwt-colorized" id="jwtColorized" style="display:none" title="Click to edit"></div>
+          </div>
+          <div id="jwtErrorInline" class="jwt-error-inline" style="display:none"></div>
         </div>
 
         <div id="jwtStatusBar" class="status-bar" style="display:none"></div>

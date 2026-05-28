@@ -353,26 +353,87 @@ body {
 /* ═══════════════════════════════════════════════════════════════
    JWT DECODER
    ══════════════════════════════════════════════════════════════ */
-.jwt-input { min-height: 96px; }
 
-/* Visual token strip */
-.jwt-visual {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 1px;
-  padding: .875rem 1rem;
+/* Unified input zone */
+.jwt-input-zone {
   background: var(--c-mantle);
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-md);
+  overflow: hidden;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.jwt-input-zone:focus-within {
+  border-color: var(--c-blue);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.jwt-input-zone.is-error {
+  border-color: color-mix(in srgb, var(--c-red) 60%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-red) 12%, transparent);
+}
+
+.jwt-zone-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .45rem .875rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.jwt-zone-body {
+  padding: .875rem 1rem;
+  min-height: 80px;
+}
+
+/* Plain-text input — visible when editing */
+.jwt-textarea {
+  display: block;
+  width: 100%;
+  min-height: 64px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--c-text);
+  caret-color: var(--c-text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8125rem;
+  line-height: 1.65;
+  resize: none;
+  outline: none;
+  padding: 0;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.jwt-textarea::placeholder {
+  color: var(--c-overlay0);
+  font-style: italic;
+}
+
+/* Colorized display — shown after successful parse */
+.jwt-colorized {
   font-family: 'JetBrains Mono', monospace;
   font-size: .8125rem;
   line-height: 1.65;
   word-break: break-all;
   overflow-wrap: anywhere;
+  cursor: text;
+  min-height: 64px;
+  position: relative;
 }
 
-.jwt-seg-header { color: var(--jwt-header); }
+.jwt-colorized::after {
+  content: '✎ click to edit';
+  display: block;
+  margin-top: .625rem;
+  font-size: .65rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--c-overlay0);
+  font-style: italic;
+}
+
+.jwt-seg-header  { color: var(--jwt-header); }
 .jwt-seg-payload { color: var(--jwt-payload); }
 .jwt-seg-sig     { color: var(--jwt-sig); opacity: .75; }
 
@@ -380,7 +441,14 @@ body {
   color: var(--c-overlay0);
   font-weight: 700;
   padding: 0 1px;
-  flex-shrink: 0;
+}
+
+.jwt-error-inline {
+  padding: .4rem .875rem .5rem;
+  border-top: 1px solid color-mix(in srgb, var(--c-red) 20%, transparent);
+  color: var(--c-red);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
 }
 
 /* Status bar */
@@ -457,14 +525,75 @@ body {
 .payload-accent .decoded-panel-label { color: var(--jwt-payload); }
 
 .decoded-panel-body {
-  padding: .875rem 1rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: .8125rem;
-  line-height: 1.75;
+  padding: .5rem .625rem;
   overflow-x: auto;
 }
 
-/* Syntax highlight classes */
+/* ── Claim table (structured key/value rows) ──────────────────── */
+.claim-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.claim-row {
+  display: grid;
+  grid-template-columns: minmax(90px, max-content) 1fr;
+  gap: .25rem .875rem;
+  padding: .4rem .5rem;
+  border-radius: var(--r-sm);
+  align-items: start;
+  transition: background var(--dur) var(--ease);
+}
+
+.claim-row:hover { background: var(--c-surface0); }
+
+.ck {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .775rem;
+  font-weight: 500;
+  color: var(--syn-key);
+  padding-top: .15rem;
+  white-space: nowrap;
+}
+
+.cv-group {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  min-width: 0;
+}
+
+.cv-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .25rem .4rem;
+}
+
+.cv {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  word-break: break-all;
+}
+
+.cv-string  { color: var(--syn-string); }
+.cv-number  { color: var(--syn-number); }
+.cv-boolean { color: var(--syn-boolean); }
+.cv-null    { color: var(--syn-null); }
+
+.cv-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: .1rem .45rem;
+  background: var(--c-surface0);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--c-subtext1);
+}
+
+/* Syntax highlight classes (kept for potential future use) */
 .syn-k { color: var(--syn-key); }
 .syn-s { color: var(--syn-string); }
 .syn-n { color: var(--syn-number); }
