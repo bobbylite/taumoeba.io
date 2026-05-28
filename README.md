@@ -155,11 +155,27 @@ No `node_modules`. No `package.json`. No lock files. The entire app ships in han
 
 ---
 
+## Privacy
+
+Most developer tools that run on someone else's server come with a hidden cost: **your data passes through their infrastructure.** Paste a JWT into the wrong tool and that token — along with its claims, scopes, and subject — lands in an access log somewhere. Paste sensitive JSON into an online formatter and it's in a request payload, potentially cached, indexed, or retained.
+
+Taumoeba.io works differently:
+
+- **No server receives your input.** There is no backend. The site is a static file served from GitHub Pages — when you paste a token or JSON, it never leaves your browser tab.
+- **No logs exist to leak.** Because nothing is transmitted, there are no server-side audit trails, no access logs, no telemetry pipelines, and no third-party analytics touching your data.
+- **The source is fully open.** Every line of HTML, CSS, and JavaScript is in this repository. You can read exactly what runs when you paste something. No minified black boxes, no bundled dependencies, no CDN-loaded scripts with opaque behavior. What you see is what executes.
+
+This makes Taumoeba.io a tool developers can actually **trust** with real tokens and real data — not because you're taking anyone's word for it, but because you can verify it yourself.
+
+---
+
 ## Philosophy
 
-> Tools should get out of the way.
+> Don't let the astrophage win.
 
-Every decision here optimizes for **instant availability** — open a file, start working. No install, no loading spinners, no sign-in, no telemetry. Your tokens and JSON never leave your machine; all processing is done in-browser with standard Web APIs.
+In Andy Weir's *Project Hail Mary*, astrophage is a microorganism that latches onto stars and slowly drains their energy — imperceptible at first, catastrophic over time. A browser full of tabs does the same thing to a developer. Every tool that demands a sign-in, spins up a loading screen, phones home, or buries the feature you need behind a paywall is astrophage: quietly consuming the energy you meant to spend on the actual work.
+
+Taumoeba.io is the antidote. Open it, use it, close it. No accounts. No onboarding. No latency. No tab that lingers. Your focus stays on the problem you were solving — not on the tool you opened to solve it.
 
 ---
 
