@@ -626,6 +626,13 @@ body {
   font-style: italic;
 }
 
+.url-mode-desc {
+  font-size: .7rem;
+  color: var(--c-overlay0);
+  font-family: 'JetBrains Mono', monospace;
+  font-style: italic;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    JSON EDITOR
    ══════════════════════════════════════════════════════════════ */

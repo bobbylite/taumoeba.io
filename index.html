@@ -44,6 +44,13 @@
           </svg>
           Base64
         </button>
+        <button class="tab-btn" role="tab" data-tab="url" aria-selected="false">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8.5 11.5a4.5 4.5 0 006.364 0l2-2a4.5 4.5 0 00-6.364-6.364l-1 1"/>
+            <path d="M11.5 8.5a4.5 4.5 0 00-6.364 0l-2 2a4.5 4.5 0 006.364 6.364l1-1"/>
+          </svg>
+          URL Encode
+        </button>
       </nav>
 
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">
@@ -172,6 +179,82 @@
             <div class="tree-scroll" id="jsonTreeContainer">
               <p class="tree-placeholder">Paste JSON on the left and click <strong>→</strong> or start typing</p>
             </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ URL ENCODE ═════ -->
+    <section id="panel-url" class="tool-panel" role="tabpanel" aria-labelledby="tab-url">
+      <div class="panel-inner">
+
+        <div class="b64-options-bar">
+          <div class="options-group">
+            <span class="options-label">Mode</span>
+            <div class="pill-group" id="urlModeGroup">
+              <button class="pill active" data-mode="component" title="encodeURIComponent — encodes all special characters">Component</button>
+              <button class="pill" data-mode="uri" title="encodeURI — preserves :/?#[]@!$&amp;'()*+,;=">Full URI</button>
+            </div>
+          </div>
+          <div class="options-group">
+            <span class="options-label url-mode-desc" id="urlModeDesc">Encodes all chars except A–Z a–z 0–9 - _ . ! ~ * ' ( )</span>
+          </div>
+        </div>
+
+        <div class="b64-layout">
+
+          <div class="b64-pane">
+            <div class="section-header">
+              <span class="section-label">Input</span>
+              <button class="btn btn-ghost btn-xs" id="urlClearInput">Clear</button>
+            </div>
+            <textarea
+              class="code-input b64-textarea"
+              id="urlInput"
+              placeholder="Paste text or a URL to encode / decode…"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <div class="b64-controls">
+            <button class="action-pill" id="urlEncode">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 3v14m0 0l-4-4m4 4l4-4"/>
+              </svg>
+              Encode
+            </button>
+            <button class="action-pill action-pill--secondary" id="urlSwap">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h12M4 6l3-3M4 6l3 3M16 14H4m12 0l-3 3m3-3l-3-3"/>
+              </svg>
+              Swap
+            </button>
+            <button class="action-pill" id="urlDecode">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 17V3m0 0L6 7m4-4l4 4"/>
+              </svg>
+              Decode
+            </button>
+          </div>
+
+          <div class="b64-pane">
+            <div class="section-header">
+              <span class="section-label">Output</span>
+              <div class="header-actions">
+                <span id="urlCharCount" class="char-count"></span>
+                <button class="btn btn-ghost btn-xs" id="urlCopyOutput">Copy</button>
+              </div>
+            </div>
+            <textarea
+              class="code-input b64-textarea b64-output"
+              id="urlOutput"
+              placeholder="Result appears here…"
+              readonly
+              spellcheck="false"
+            ></textarea>
+            <div id="urlError" class="error-bar" style="display:none"></div>
           </div>
 
         </div>

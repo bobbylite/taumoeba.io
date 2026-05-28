@@ -712,3 +712,100 @@ document.getElementById('b64CopyOutput').addEventListener('click', function () {
   const text = b64Output.value;
   if (text) copyText(text, this);
 });
+
+// ═══════════════════════════════════════════════════════════════
+// URL ENCODER / DECODER
+// ═══════════════════════════════════════════════════════════════
+
+const urlInput     = document.getElementById('urlInput');
+const urlOutput    = document.getElementById('urlOutput');
+const urlError     = document.getElementById('urlError');
+const urlCharCount = document.getElementById('urlCharCount');
+const urlModeDesc  = document.getElementById('urlModeDesc');
+
+const URL_MODE_DESCS = {
+  component: "Encodes all chars except A–Z a–z 0–9 - _ . ! ~ * ' ( )",
+  uri:       "Preserves URI structure chars: : / ? # [ ] @ ! $ & ' ( ) * + , ; =",
+};
+
+let urlMode = 'component';
+
+document.getElementById('urlModeGroup').querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.getElementById('urlModeGroup').querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    urlMode = pill.dataset.mode;
+    urlModeDesc.textContent = URL_MODE_DESCS[urlMode];
+  });
+});
+
+function setUrlError(msg) {
+  if (msg) {
+    urlError.textContent = msg;
+    urlError.style.display = 'block';
+  } else {
+    urlError.style.display = 'none';
+  }
+}
+
+function updateUrlCharCount(text) {
+  urlCharCount.textContent = text ? `${text.length} chars` : '';
+}
+
+function urlEncode(text) {
+  return urlMode === 'component' ? encodeURIComponent(text) : encodeURI(text);
+}
+
+function urlDecode(text) {
+  return urlMode === 'component' ? decodeURIComponent(text) : decodeURI(text);
+}
+
+document.getElementById('urlEncode').addEventListener('click', () => {
+  setUrlError(null);
+  const input = urlInput.value;
+  if (!input) { urlOutput.value = ''; updateUrlCharCount(''); return; }
+  try {
+    const result = urlEncode(input);
+    urlOutput.value = result;
+    updateUrlCharCount(result);
+  } catch (e) {
+    setUrlError(`Encode error: ${e.message}`);
+    urlOutput.value = '';
+    updateUrlCharCount('');
+  }
+});
+
+document.getElementById('urlDecode').addEventListener('click', () => {
+  setUrlError(null);
+  const input = urlInput.value.trim();
+  if (!input) { urlOutput.value = ''; updateUrlCharCount(''); return; }
+  try {
+    const result = urlDecode(input);
+    urlOutput.value = result;
+    updateUrlCharCount(result);
+  } catch (e) {
+    setUrlError(`Decode error: malformed percent-encoding — ${e.message}`);
+    urlOutput.value = '';
+    updateUrlCharCount('');
+  }
+});
+
+document.getElementById('urlSwap').addEventListener('click', () => {
+  const tmp = urlInput.value;
+  urlInput.value = urlOutput.value;
+  urlOutput.value = tmp;
+  setUrlError(null);
+  updateUrlCharCount(urlOutput.value);
+});
+
+document.getElementById('urlClearInput').addEventListener('click', () => {
+  urlInput.value = '';
+  urlOutput.value = '';
+  setUrlError(null);
+  updateUrlCharCount('');
+});
+
+document.getElementById('urlCopyOutput').addEventListener('click', function () {
+  const text = urlOutput.value;
+  if (text) copyText(text, this);
+});
