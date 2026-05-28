@@ -28,6 +28,8 @@ JWT decoding · JSON editing · JSON serialize/deserialize · Base64 · URL enco
 
 Taumoeba.io WebKit is a collection of everyday developer utilities packaged as a single, self-contained HTML file. No npm install. No bundler. No runtime. Open it in a browser and it works — locally, offline, or served from any static host.
 
+Privacy preserving tool. Everything runs in your browser. Nothing you paste is ever transmitted, logged, or stored — paste a real JWT, real credentials, real production JSON. The source code is open and auditable, so you don't have to take anyone's word for it.
+
 The design is inspired by [Catppuccin](https://github.com/catppuccin/catppuccin) — a pastel palette that's easy on the eyes at 2 AM and just as clean in full daylight.
 
 ---
