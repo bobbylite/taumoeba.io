@@ -356,6 +356,19 @@ document.querySelectorAll('.copy-json-btn').forEach(btn => {
 // JSON EDITOR
 // ═══════════════════════════════════════════════════════════════
 
+// ── JSON inner sub-tab switching ───────────────────────────────
+
+document.querySelectorAll('.json-subtab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.json-subtab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const id = btn.dataset.subtab === 'editor' ? 'jsonSubEditor' : 'jsonSubSerial';
+    document.querySelectorAll('.json-subpanel').forEach(p => {
+      p.classList.toggle('active', p.id === id);
+    });
+  });
+});
+
 const jsonTextInput    = document.getElementById('jsonTextInput');
 const jsonTreeContainer = document.getElementById('jsonTreeContainer');
 const jsonStatus       = document.getElementById('jsonStatus');
@@ -631,6 +644,66 @@ document.getElementById('jsonCollapseAll').addEventListener('click', () => {
     // show inline close bracket
     if (ci.length > 1) ci[ci.length - 1].classList.remove('hidden');
   });
+});
+
+// ── Serialize / Deserialize ────────────────────────────────────
+
+const serialInput  = document.getElementById('serialInput');
+const serialOutput = document.getElementById('serialOutput');
+const serialError  = document.getElementById('serialError');
+
+function setSerialError(msg) {
+  if (msg) { serialError.textContent = msg; serialError.style.display = 'block'; }
+  else { serialError.style.display = 'none'; }
+}
+
+document.getElementById('serialSerialize').addEventListener('click', () => {
+  setSerialError(null);
+  const input = serialInput.value.trim();
+  if (!input) { serialOutput.value = ''; return; }
+  try {
+    const parsed = JSON.parse(input);
+    serialOutput.value = JSON.stringify(JSON.stringify(parsed));
+  } catch (e) {
+    setSerialError(`Parse error: ${e.message.split('\n')[0]}`);
+    serialOutput.value = '';
+  }
+});
+
+document.getElementById('serialDeserialize').addEventListener('click', () => {
+  setSerialError(null);
+  const input = serialInput.value.trim();
+  if (!input) { serialOutput.value = ''; return; }
+  try {
+    const inner = JSON.parse(input);
+    if (typeof inner !== 'string') {
+      setSerialError('Input must be a JSON string literal (wrapped in quotes). Did you mean Serialize?');
+      serialOutput.value = '';
+      return;
+    }
+    serialOutput.value = JSON.stringify(JSON.parse(inner), null, 2);
+  } catch (e) {
+    setSerialError(`Parse error: ${e.message.split('\n')[0]}`);
+    serialOutput.value = '';
+  }
+});
+
+document.getElementById('serialSwap').addEventListener('click', () => {
+  const tmp = serialInput.value;
+  serialInput.value = serialOutput.value;
+  serialOutput.value = tmp;
+  setSerialError(null);
+});
+
+document.getElementById('serialClear').addEventListener('click', () => {
+  serialInput.value = '';
+  serialOutput.value = '';
+  setSerialError(null);
+});
+
+document.getElementById('serialCopyOutput').addEventListener('click', function () {
+  const text = serialOutput.value;
+  if (text) copyText(text, this);
 });
 
 // ═══════════════════════════════════════════════════════════════

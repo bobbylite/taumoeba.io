@@ -155,58 +155,143 @@
     <section id="panel-json" class="tool-panel" role="tabpanel" aria-labelledby="tab-json">
       <div class="panel-inner panel-inner--fill">
 
-        <div class="json-toolbar">
-          <div class="toolbar-left">
-            <button class="btn btn-sm" id="jsonFormat">Format</button>
-            <button class="btn btn-sm" id="jsonMinify">Minify</button>
-            <button class="btn btn-sm" id="jsonSort">Sort Keys</button>
-            <button class="btn btn-ghost btn-sm" id="jsonClear">Clear</button>
-          </div>
-          <div class="toolbar-center">
-            <span id="jsonStatus" class="status-chip"></span>
-          </div>
-          <div class="toolbar-right">
-            <button class="btn btn-ghost btn-sm" id="jsonExpandAll">Expand All</button>
-            <button class="btn btn-ghost btn-sm" id="jsonCollapseAll">Collapse All</button>
-            <button class="btn btn-ghost btn-sm" id="jsonCopyText">Copy JSON</button>
-          </div>
+        <!-- ── Inner sub-nav ───────────────────────────────────── -->
+        <div class="json-subnav">
+          <button class="json-subtab-btn active" data-subtab="editor">Editor</button>
+          <button class="json-subtab-btn" data-subtab="serial">Serialize / Deserialize</button>
         </div>
 
-        <div class="json-editor-layout">
+        <!-- ── Editor sub-panel ────────────────────────────────── -->
+        <div class="json-subpanel active" id="jsonSubEditor">
 
-          <div class="editor-pane">
-            <div class="pane-label">Text</div>
-            <textarea
-              class="code-input json-textarea"
-              id="jsonTextInput"
-              placeholder='{ "key": "value" }'
-              spellcheck="false"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-            ></textarea>
-          </div>
-
-          <div class="editor-gutter">
-            <button class="gutter-btn" id="syncToTree" title="Parse text → render tree">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="8" x2="13" y2="8"/>
-                <polyline points="9 4 13 8 9 12"/>
-              </svg>
-            </button>
-            <button class="gutter-btn" id="syncToText" title="Stringify tree → update text">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="13" y1="8" x2="3" y2="8"/>
-                <polyline points="7 4 3 8 7 12"/>
-              </svg>
-            </button>
-          </div>
-
-          <div class="editor-pane">
-            <div class="pane-label">Tree</div>
-            <div class="tree-scroll" id="jsonTreeContainer">
-              <p class="tree-placeholder">Paste JSON on the left and click <strong>→</strong> or start typing</p>
+          <div class="json-toolbar">
+            <div class="toolbar-left">
+              <button class="btn btn-sm" id="jsonFormat">Format</button>
+              <button class="btn btn-sm" id="jsonMinify">Minify</button>
+              <button class="btn btn-sm" id="jsonSort">Sort Keys</button>
+              <button class="btn btn-ghost btn-sm" id="jsonClear">Clear</button>
             </div>
+            <div class="toolbar-center">
+              <span id="jsonStatus" class="status-chip"></span>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn btn-ghost btn-sm" id="jsonExpandAll">Expand All</button>
+              <button class="btn btn-ghost btn-sm" id="jsonCollapseAll">Collapse All</button>
+              <button class="btn btn-ghost btn-sm" id="jsonCopyText">Copy JSON</button>
+            </div>
+          </div>
+
+          <div class="json-editor-layout">
+
+            <div class="editor-pane">
+              <div class="pane-label">Text</div>
+              <textarea
+                class="code-input json-textarea"
+                id="jsonTextInput"
+                placeholder='{ "key": "value" }'
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+              ></textarea>
+            </div>
+
+            <div class="editor-gutter">
+              <button class="gutter-btn" id="syncToTree" title="Parse text → render tree">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="8" x2="13" y2="8"/>
+                  <polyline points="9 4 13 8 9 12"/>
+                </svg>
+              </button>
+              <button class="gutter-btn" id="syncToText" title="Stringify tree → update text">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="13" y1="8" x2="3" y2="8"/>
+                  <polyline points="7 4 3 8 7 12"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="editor-pane">
+              <div class="pane-label">Tree</div>
+              <div class="tree-scroll" id="jsonTreeContainer">
+                <p class="tree-placeholder">Paste JSON on the left and click <strong>→</strong> or start typing</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ── Serialize / Deserialize sub-panel ───────────────── -->
+        <div class="json-subpanel" id="jsonSubSerial">
+
+          <div class="b64-options-bar">
+            <div class="options-group">
+              <span class="options-label">Serialize</span>
+              <span class="url-mode-desc">JSON object → escaped string literal</span>
+            </div>
+            <div class="options-group">
+              <span class="options-label">Deserialize</span>
+              <span class="url-mode-desc">JSON string literal → formatted object</span>
+            </div>
+          </div>
+
+          <div class="b64-layout">
+
+            <div class="b64-pane">
+              <div class="section-header">
+                <span class="section-label">Input</span>
+                <button class="btn btn-ghost btn-xs" id="serialClear">Clear</button>
+              </div>
+              <textarea
+                class="code-input b64-textarea"
+                id="serialInput"
+                placeholder="Paste a JSON object to serialize, or a JSON string literal to deserialize…"
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+              ></textarea>
+            </div>
+
+            <div class="b64-controls">
+              <button class="action-pill" id="serialSerialize">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 3v14m0 0l-4-4m4 4l4-4"/>
+                </svg>
+                Serialize
+              </button>
+              <button class="action-pill action-pill--secondary" id="serialSwap">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 6h12M4 6l3-3M4 6l3 3M16 14H4m12 0l-3 3m3-3l-3-3"/>
+                </svg>
+                Swap
+              </button>
+              <button class="action-pill" id="serialDeserialize">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 17V3m0 0L6 7m4-4l4 4"/>
+                </svg>
+                Deserialize
+              </button>
+            </div>
+
+            <div class="b64-pane">
+              <div class="section-header">
+                <span class="section-label">Output</span>
+                <div class="header-actions">
+                  <button class="btn btn-ghost btn-xs" id="serialCopyOutput">Copy</button>
+                </div>
+              </div>
+              <textarea
+                class="code-input b64-textarea b64-output"
+                id="serialOutput"
+                placeholder="Result appears here…"
+                readonly
+                spellcheck="false"
+              ></textarea>
+              <div id="serialError" class="error-bar" style="display:none"></div>
+            </div>
+
           </div>
 
         </div>
