@@ -1,0 +1,41 @@
+# ── macOS ──────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ── Windows ────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Linux ──────────────────────────────────────────────────────
+*~
+
+# ── Editors ────────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/*.code-workspace
+*.swp
+*.swo
+.idea/
+*.suo
+*.user
+
+# ── Environment ────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs & temp ────────────────────────────────────────────────
+*.log
+npm-debug.log*
+*.tmp
+*.temp
+
+# ── If a dev toolchain is ever added ───────────────────────────
+node_modules/
+dist/
+.cache/

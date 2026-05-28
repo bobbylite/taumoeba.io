@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevKit — JWT · JSON · Base64</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <svg class="logo-mark" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2L25.2 8.5V21.5L14 28L2.8 21.5V8.5L14 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M14 8L19.2 11V17L14 20L8.8 17V11L14 8Z" fill="currentColor" opacity="0.4"/>
+        </svg>
+        <span>DevKit</span>
+      </div>
+
+      <nav class="tab-nav" role="tablist" aria-label="Tools">
+        <button class="tab-btn active" role="tab" data-tab="jwt" aria-selected="true">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="18" height="14" rx="2"/>
+            <path d="M6 7h3m0 0v6m0-6h2a2 2 0 010 4H9m5-4h2"/>
+          </svg>
+          JWT Decoder
+        </button>
+        <button class="tab-btn" role="tab" data-tab="json" aria-selected="false">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3H3a1 1 0 00-1 1v3c0 1.1.9 2 2 2s2 .9 2 2v3a1 1 0 01-1 1H3"/>
+            <path d="M15 3h2a1 1 0 011 1v3a2 2 0 01-2 2 2 2 0 012 2v3a1 1 0 001 1h-2"/>
+            <line x1="10" y1="7" x2="10" y2="13"/>
+          </svg>
+          JSON Editor
+        </button>
+        <button class="tab-btn" role="tab" data-tab="base64" aria-selected="false">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="7" height="5" rx="1"/>
+            <rect x="11" y="9" width="7" height="5" rx="1"/>
+            <path d="M9 8.5h2m0 0l-1.5-1.5M11 8.5l-1.5 1.5"/>
+          </svg>
+          Base64
+        </button>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">
+        <svg class="icon-sun" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10" cy="10" r="3.5"/>
+          <line x1="10" y1="1.5" x2="10" y2="3"/>
+          <line x1="10" y1="17" x2="10" y2="18.5"/>
+          <line x1="3.05" y1="3.05" x2="4.1" y2="4.1"/>
+          <line x1="15.9" y1="15.9" x2="16.95" y2="16.95"/>
+          <line x1="1.5" y1="10" x2="3" y2="10"/>
+          <line x1="17" y1="10" x2="18.5" y2="10"/>
+          <line x1="3.05" y1="16.95" x2="4.1" y2="15.9"/>
+          <line x1="15.9" y1="4.1" x2="16.95" y2="3.05"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.5 12A7.5 7.5 0 018 2.5a7.5 7.5 0 100 15 7.5 7.5 0 009.5-5.5z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- ═══════════════════════════════════ JWT DECODER ═══ -->
+    <section id="panel-jwt" class="tool-panel active" role="tabpanel" aria-labelledby="tab-jwt">
+      <div class="panel-inner">
+
+        <div class="tool-section">
+          <div class="section-header">
+            <span class="section-label">Encoded Token</span>
+            <div class="header-actions">
+              <button class="btn btn-ghost btn-sm" id="jwtExample">Load Example</button>
+              <button class="btn btn-ghost btn-sm" id="jwtClear">Clear</button>
+            </div>
+          </div>
+          <textarea
+            class="code-input jwt-input"
+            id="jwtInput"
+            placeholder="Paste a JWT token here — eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <div id="jwtErrorBar" class="error-bar" style="display:none"></div>
+
+        <div id="jwtVisualWrap" style="display:none">
+          <div class="jwt-visual" id="jwtVisual"></div>
+        </div>
+
+        <div id="jwtStatusBar" class="status-bar" style="display:none"></div>
+
+        <div id="jwtDecoded" class="jwt-decoded" style="display:none">
+          <div class="decoded-panel">
+            <div class="decoded-panel-header header-accent">
+              <span class="decoded-panel-label">Header</span>
+              <button class="btn btn-ghost btn-xs copy-json-btn" data-target="jwtHeaderBody">Copy</button>
+            </div>
+            <div class="decoded-panel-body" id="jwtHeaderBody"></div>
+          </div>
+          <div class="decoded-panel">
+            <div class="decoded-panel-header payload-accent">
+              <span class="decoded-panel-label">Payload</span>
+              <button class="btn btn-ghost btn-xs copy-json-btn" data-target="jwtPayloadBody">Copy</button>
+            </div>
+            <div class="decoded-panel-body" id="jwtPayloadBody"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ JSON EDITOR ═══ -->
+    <section id="panel-json" class="tool-panel" role="tabpanel" aria-labelledby="tab-json">
+      <div class="panel-inner panel-inner--fill">
+
+        <div class="json-toolbar">
+          <div class="toolbar-left">
+            <button class="btn btn-sm" id="jsonFormat">Format</button>
+            <button class="btn btn-sm" id="jsonMinify">Minify</button>
+            <button class="btn btn-sm" id="jsonSort">Sort Keys</button>
+            <button class="btn btn-ghost btn-sm" id="jsonClear">Clear</button>
+          </div>
+          <div class="toolbar-center">
+            <span id="jsonStatus" class="status-chip"></span>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-ghost btn-sm" id="jsonExpandAll">Expand All</button>
+            <button class="btn btn-ghost btn-sm" id="jsonCollapseAll">Collapse All</button>
+            <button class="btn btn-ghost btn-sm" id="jsonCopyText">Copy JSON</button>
+          </div>
+        </div>
+
+        <div class="json-editor-layout">
+
+          <div class="editor-pane">
+            <div class="pane-label">Text</div>
+            <textarea
+              class="code-input json-textarea"
+              id="jsonTextInput"
+              placeholder='{ "key": "value" }'
+              spellcheck="false"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+            ></textarea>
+          </div>
+
+          <div class="editor-gutter">
+            <button class="gutter-btn" id="syncToTree" title="Parse text → render tree">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="8" x2="13" y2="8"/>
+                <polyline points="9 4 13 8 9 12"/>
+              </svg>
+            </button>
+            <button class="gutter-btn" id="syncToText" title="Stringify tree → update text">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="13" y1="8" x2="3" y2="8"/>
+                <polyline points="7 4 3 8 7 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="editor-pane">
+            <div class="pane-label">Tree</div>
+            <div class="tree-scroll" id="jsonTreeContainer">
+              <p class="tree-placeholder">Paste JSON on the left and click <strong>→</strong> or start typing</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ BASE64 ════════ -->
+    <section id="panel-base64" class="tool-panel" role="tabpanel" aria-labelledby="tab-base64">
+      <div class="panel-inner">
+
+        <div class="b64-options-bar">
+          <div class="options-group">
+            <span class="options-label">Variant</span>
+            <div class="pill-group" id="variantGroup">
+              <button class="pill active" data-variant="standard">Standard</button>
+              <button class="pill" data-variant="urlsafe">URL-safe</button>
+            </div>
+          </div>
+          <div class="options-group">
+            <span class="options-label">Input encoding</span>
+            <div class="pill-group" id="encodingGroup">
+              <button class="pill active" data-encoding="utf8">UTF-8</button>
+              <button class="pill" data-encoding="latin1">Latin-1</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="b64-layout">
+
+          <div class="b64-pane">
+            <div class="section-header">
+              <span class="section-label">Input</span>
+              <button class="btn btn-ghost btn-xs" id="b64ClearInput">Clear</button>
+            </div>
+            <textarea
+              class="code-input b64-textarea"
+              id="b64Input"
+              placeholder="Enter plain text to encode, or base64 to decode…"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <div class="b64-controls">
+            <button class="action-pill" id="b64Encode">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 3v14m0 0l-4-4m4 4l4-4"/>
+              </svg>
+              Encode
+            </button>
+            <button class="action-pill action-pill--secondary" id="b64Swap">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h12M4 6l3-3M4 6l3 3M16 14H4m12 0l-3 3m3-3l-3-3"/>
+              </svg>
+              Swap
+            </button>
+            <button class="action-pill" id="b64Decode">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 17V3m0 0L6 7m4-4l4 4"/>
+              </svg>
+              Decode
+            </button>
+          </div>
+
+          <div class="b64-pane">
+            <div class="section-header">
+              <span class="section-label">Output</span>
+              <div class="header-actions">
+                <span id="b64CharCount" class="char-count"></span>
+                <button class="btn btn-ghost btn-xs" id="b64CopyOutput">Copy</button>
+              </div>
+            </div>
+            <textarea
+              class="code-input b64-textarea b64-output"
+              id="b64Output"
+              placeholder="Result appears here…"
+              readonly
+              spellcheck="false"
+            ></textarea>
+            <div id="b64Error" class="error-bar" style="display:none"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

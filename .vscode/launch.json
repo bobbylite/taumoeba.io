@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "DevKit · Chrome",
+      "file": "${workspaceFolder}/index.html",
+      "webRoot": "${workspaceFolder}",
+      "runtimeArgs": ["--allow-file-access-from-files"]
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "DevKit · Edge",
+      "file": "${workspaceFolder}/index.html",
+      "webRoot": "${workspaceFolder}",
+      "runtimeArgs": ["--allow-file-access-from-files"]
+    }
+  ]
+}
