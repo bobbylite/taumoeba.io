@@ -28,10 +28,16 @@ jobs:
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+          # GitHub Pages URL: https://<owner>.github.io/<repo>  (project page)
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          PAGES_URL="https://${OWNER}.github.io/${REPO_NAME}"
           sed -i "s|__COMMIT_SHA__|${SHORT_SHA}|g" index.html
           sed -i "s|__REPO_URL__|${REPO_URL}|g"   index.html
-          echo "✓ version: ${SHORT_SHA}"
-          echo "✓ repo:    ${REPO_URL}"
+          sed -i "s|__PAGES_URL__|${PAGES_URL}|g" index.html
+          echo "✓ version:   ${SHORT_SHA}"
+          echo "✓ repo:      ${REPO_URL}"
+          echo "✓ pages url: ${PAGES_URL}"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
