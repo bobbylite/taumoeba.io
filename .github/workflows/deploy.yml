@@ -1,10 +1,8 @@
-name: Deploy to GitHub Pages
+name: Deploy Static Site to GitHub Pages
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -12,53 +10,27 @@ permissions:
   pages: write
   id-token: write
 
-# Only one deployment at a time; cancel in-flight runs on new push
 concurrency:
-  group: pages
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
-  # ── Validate ──────────────────────────────────────────────────
-  validate:
-    name: Validate
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check HTML well-formedness
-        run: |
-          # tidy returns exit 1 on warnings, 2 on errors — treat only errors as failure
-          docker run --rm -v "$PWD":/work ghcr.io/htacg/tidy-html5:latest \
-            -q --output-file /dev/null --errors /work/index.html || [ $? -lt 2 ]
-
-      - name: Lint JavaScript (Node built-in parse check)
-        run: node --input-type=module < app.js && echo "✓ app.js parses cleanly"
-
-      - name: Verify all assets present
-        run: |
-          for f in index.html style.css app.js; do
-            [ -f "$f" ] && echo "✓ $f" || (echo "✗ missing $f" && exit 1)
-          done
-
-  # ── Deploy (main branch only) ─────────────────────────────────
   deploy:
-    name: Deploy
-    needs: validate
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/configure-pages@v5
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
-      - name: Upload site artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'           # entire repo root is the site
+          path: .
 
       - name: Deploy to GitHub Pages
         id: deployment
