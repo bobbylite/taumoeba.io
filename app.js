@@ -364,7 +364,9 @@ document.querySelectorAll('.json-subtab-btn').forEach(btn => {
     btn.classList.add('active');
     const id = btn.dataset.subtab === 'editor' ? 'jsonSubEditor' : 'jsonSubSerial';
     document.querySelectorAll('.json-subpanel').forEach(p => {
-      p.classList.toggle('active', p.id === id);
+      const active = p.id === id;
+      p.classList.toggle('active', active);
+      p.style.display = active ? 'flex' : 'none';
     });
   });
 });
